@@ -1,0 +1,26 @@
+Error Code Explanations
+Error Code: HTTP404
+**Description**: Page Not Found
+**Explanation**: This error indicates that the requested webpage could not be found on the server. It might be due to a mistyped URL, broken link, or the page being removed.
+**Solution**: Verify the URL, check for typos, and ensure the server is correctly configured to serve the resource.
+
+Error Code: SQL1064
+**Description**: SQL Syntax Error
+**Explanation**: This error arises when there’s a mistake in the SQL query syntax. Examples include missing keywords, unmatched parentheses, or incorrect use of operators.
+**Solution**: Review the SQL query for syntax correctness and consult the database documentation for proper usage.
+
+Error Code: PY101
+**Description**: IndentationError
+**Explanation**: Python encountered unexpected or inconsistent indentation in the code. Since Python uses indentation to define blocks, any misalignment can cause this error.
+**Solution**: Ensure consistent indentation throughout the code, using spaces or tabs, but not both.
+
+Error Code: MEM002
+**Description**: Out of Memory
+**Explanation**: This error occurs when a program attempts to allocate more memory than is available on the system. It can be caused by memory leaks or inefficient algorithms.
+**Solution**: Optimize the program’s memory usage, identify and fix memory leaks, or increase the available system memory.
+
+Error Code: JS500
+**Description**: Internal Server Error
+**Explanation**: This is a generic error message when the server encounters a problem and cannot fulfill the request. The exact cause varies and may require server-side investigation.
+**Solution**: Check the server logs for detailed error information and debug the backend code.
+

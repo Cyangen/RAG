@@ -1,0 +1,73 @@
+Matplotlib Graph Types Documentation
+Line Plot
+**Description**: A basic plot used to display data points connected by a continuous line.
+**Example**:
+import matplotlib.pyplot as plt
+
+x = [1, 2, 3, 4]
+y = [10, 20, 25, 30]
+
+plt.plot(x, y)
+plt.title('Line Plot')
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.show()
+**Notes**: Useful for visualizing trends over time or continuous data.
+
+Bar Chart
+**Description**: Used to represent categorical data with rectangular bars.
+**Example**:
+import matplotlib.pyplot as plt
+
+categories = ['A', 'B', 'C', 'D']
+values = [4, 7, 1, 8]
+
+plt.bar(categories, values)
+plt.title('Bar Chart')
+plt.xlabel('Categories')
+plt.ylabel('Values')
+plt.show()
+**Notes**: Horizontal bars can be created using 'plt.barh()'.
+
+Scatter Plot
+**Description**: Displays individual data points on a two-dimensional axis.
+**Example**:
+import matplotlib.pyplot as plt
+
+x = [5, 7, 8, 7]
+y = [7, 8, 6, 5]
+
+plt.scatter(x, y)
+plt.title('Scatter Plot')
+plt.xlabel('X-axis')
+plt.ylabel('Y-axis')
+plt.show()
+**Notes**: Ideal for observing relationships or clustering between variables.
+
+Histogram
+**Description**: Used to represent the distribution of a dataset.
+**Example**:
+import matplotlib.pyplot as plt
+
+data = [1, 1, 2, 3, 3, 3, 4, 5, 5, 6]
+
+plt.hist(data, bins=5)
+plt.title('Histogram')
+plt.xlabel('Bins')
+plt.ylabel('Frequency')
+plt.show()
+**Notes**: The number of bins can significantly affect the visualization.
+
+Pie Chart
+**Description**: Shows proportions of a whole as slices of a pie.
+**Example**:
+import matplotlib.pyplot as plt
+
+labels = ['A', 'B', 'C', 'D']
+sizes = [15, 30, 45, 10]
+
+plt.pie(sizes, labels=labels, autopct='%1.1f%%')
+plt.title('Pie Chart')
+plt.show()
+**Notes**: Best suited for showing parts of a whole with limited categories.
+
