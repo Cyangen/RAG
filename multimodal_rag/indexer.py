@@ -8,10 +8,12 @@ from langchain.schema.document import Document
 from langchain_community.embeddings import OllamaEmbeddings
 from langchain.retrievers.multi_vector import MultiVectorRetriever
 # from langchain_openai import ChatOpenAI
-import uuid, pickle
+from PIL import Image
+from io import BytesIO
+import uuid, pickle, base64
 
-def pdfembedder():
-    file_path = r"S:\LLM\RAG\data\pdf_test\1706.03762v7.pdf"
+def pdf_embedder(file_path):
+    file_path = file_path
 
     # Reference: https://docs.unstructured.io/open-source/core-functionality/chunking
     chunks = partition_pdf(
@@ -31,6 +33,7 @@ def pdfembedder():
 
         # extract_images_in_pdf=True,          # deprecated
     )
+    print("DOCUMENT CHUNKED")
 
     #Getting text and table elements from chunks
     tables = []
@@ -76,7 +79,7 @@ def pdfembedder():
     # Summarize tables
     tables_html = [table.metadata.text_as_html for table in tables]
     table_summaries = summarize_chain.batch(tables_html, {"max_concurrency": 3})
-
+    print("TEXT & TABLES SUMMARISED")
 
     # Prompt for image summary(change prompt as you see fit)
     # prompt_template = """Describe the image in detail. For context,
@@ -101,7 +104,7 @@ def pdfembedder():
     chain = prompt | ChatOllama(model="llava-phi3", keep_alive=0) | StrOutputParser()
 
     image_summaries = chain.batch(images)
-
+    print("IMAGES SUMMARISED")
 
     #Embeddings
     #Define embedding model
@@ -153,6 +156,7 @@ def pdfembedder():
     ]
     retriever.vectorstore.add_documents(summary_img)
     retriever.docstore.mset(list(zip(img_ids, images_pickled)))
+    print("SUMMARIES EMBEDDED")
 
 
 
@@ -166,6 +170,64 @@ def get_images_base64(chunks):
                     images_b64.append(el.metadata.image_base64)
     return images_b64
 
+def image_embedder(image_path):
+    with open(image_path, "rb") as img_file:
+        encoded_string = base64.b64encode(img_file.read()).decode("utf-8")
+
+    prompt_template = """Describe the image in detail."""
+    messages = [
+        (
+            "user",
+            [
+                {"type": "text", "text": prompt_template},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": "data:image/jpeg;base64,{image}"},
+                },
+            ],
+        )
+    ]
+
+    prompt = ChatPromptTemplate.from_messages(messages)
+
+    chain = prompt | ChatOllama(model="llava-phi3", keep_alive=0) | StrOutputParser()
+
+    image_summaries = [chain.invoke(encoded_string)]
+    #Embeddings
+    #Define embedding model
+    embeddings = OllamaEmbeddings(model="nomic-embed-text", show_progress=True)
+
+    # The vectorstore to use to index the child chunks
+    vectorstore = Chroma(collection_name="multi_modal_rag", 
+                        embedding_function=embeddings,
+                        persist_directory="./db-test"
+                        )
+
+    # The storage layer for the parent documents
+    store = LocalFileStore("./db-localfiles")
+    id_key = "doc_id"
+
+    # The retriever (empty to start)
+    retriever = MultiVectorRetriever(
+        vectorstore=vectorstore,
+        docstore=store,
+        id_key=id_key,
+    )
+
+    #convert objects to bytes-like objects
+    images_pickled = [pickle.dumps(i) for i in [encoded_string]]
+
+    # Add image summaries
+    img_ids = [str(uuid.uuid4()) for _ in images_pickled]
+    summary_img = [
+        Document(page_content=summary, metadata={id_key: img_ids[i]}) for i, summary in enumerate(image_summaries)
+    ]
+    retriever.vectorstore.add_documents(summary_img)
+    retriever.docstore.mset(list(zip(img_ids, images_pickled)))
 
 if __name__ == "__main__":
-    pdfembedder()
+    # pdf_embedder(r"S:\LLM\RAG\data\pdf_test\1706.03762v7.pdf")
+    image_embedder(r"S:\LLM\RAG\multimodal_rag\image2.jpg")
+
+    print("DONE")
+
