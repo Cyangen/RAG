@@ -13,6 +13,7 @@ langdetect
 langsmith
 chromadb
 python-magic-bin
+gradio
 
 # Install poppler and add to PATH
 # RMB TO UNINSTALL python-magic 
