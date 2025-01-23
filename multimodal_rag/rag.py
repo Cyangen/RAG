@@ -6,13 +6,15 @@ from langchain_community.chat_models import ChatOllama
 from langchain.vectorstores import Chroma
 from langchain.storage import LocalFileStore
 from langchain_community.embeddings import OllamaEmbeddings
-from langchain.retrievers.multi_vector import MultiVectorRetriever
+# from langchain.retrievers.multi_vector import MultiVectorRetriever
+from test_MVR import MultiVectorRetriever
 # from langchain_openai import ChatOpenAI
 from IPython.display import Image, display
 from PIL import Image as PIL_Image
 from base64 import b64decode
 from io import BytesIO
 import pickle, base64
+from langchain.retrievers.document_compressors import FlashrankRerank
 
 
 def parse_docs(docs):
@@ -91,6 +93,8 @@ def embedding_chains():
         vectorstore=vectorstore,
         docstore=store,
         id_key=id_key,
+        reranking_model=FlashrankRerank(top_n=5),
+        search_kwargs= {"k": 20}
     )
 
     chain = (
@@ -127,6 +131,7 @@ def response_with_sources(user_input):
     print("\n\nResponse:", response['response'])
 
     print("\n\nContext:")
+    print(len(response['context']['texts']), len(response['context']['images']))
     for text in response['context']['texts']:
         print(text.text)
         print("Page number: ", text.metadata.page_number)
@@ -137,4 +142,5 @@ def response_with_sources(user_input):
 
 
 if __name__ == "__main__":
-    response_no_sources("How does multi-head attention mechanism works within the Transformer model?") #Replace testing prompt with user input
+    # response_with_sources("How does multi-head attention mechanism works within the Transformer model?") #Replace testing prompt with user input
+    response_with_sources("How does attention impact model training?")
