@@ -142,5 +142,5 @@ def response_with_sources(user_input):
 
 
 if __name__ == "__main__":
-    # response_with_sources("How does multi-head attention mechanism works within the Transformer model?") #Replace testing prompt with user input
-    response_with_sources("How does attention impact model training?")
+    response_with_sources("How does multi-head attention mechanism works within the Transformer model?") #Replace testing prompt with user input
+    # response_with_sources("The image presents a diagram illustrating the flow of information from sensors to the central processing unit (CPU) and then back out to various components. The diagram is in black and white, with arrows indicating the direction of data transfer.\n\nAt the top left,")

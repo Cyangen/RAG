@@ -82,10 +82,10 @@ def pdf_embedder(file_path):
     print("TEXT & TABLES SUMMARISED")
 
     # Prompt for image summary(change prompt as you see fit)
-    # prompt_template = """Describe the image in detail. For context,
-    #                 the image is part of a research paper explaining the transformers
-    #                 architecture. Be specific about graphs, such as bar plots."""
-    prompt_template = """Describe the image in detail."""
+    prompt_template = """Describe the image in detail. For context,
+                    the image is part of a research paper explaining the transformers
+                    architecture. Be specific about graphs, such as bar plots."""
+    # prompt_template = """Describe the image in detail."""
     messages = [
         (
             "user",
@@ -222,12 +222,13 @@ def image_embedder(image_path):
     summary_img = [
         Document(page_content=summary, metadata={id_key: img_ids[i]}) for i, summary in enumerate(image_summaries)
     ]
+
     retriever.vectorstore.add_documents(summary_img)
     retriever.docstore.mset(list(zip(img_ids, images_pickled)))
 
 if __name__ == "__main__":
-    # pdf_embedder(r"S:\LLM\RAG\data\pdf_test\1706.03762v7.pdf")
-    image_embedder(r"S:\LLM\RAG\multimodal_rag\image2.jpg")
+    pdf_embedder(r"..\data\pdf_test\1706.03762v7.pdf")
+    # image_embedder(r"S:\LLM\RAG\multimodal_rag\image2.jpg")
 
     print("DONE")
 
