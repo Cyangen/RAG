@@ -14,6 +14,8 @@ langsmith
 chromadb
 python-magic-bin
 gradio
+flashrank
+faiss_cpu
 
 # Install poppler and add to PATH
 # RMB TO UNINSTALL python-magic 

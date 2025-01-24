@@ -36,10 +36,12 @@ emoji==2.14.1
 et_xmlfile==2.0.0
 eval_type_backport==0.2.2
 executing==2.1.0
+faiss-cpu==1.9.0.post1
 fastapi==0.115.6
 ffmpy==0.5.0
 filelock==3.16.1
 filetype==1.2.0
+FlashRank==0.2.10
 flatbuffers==24.12.23
 fonttools==4.55.3
 frozenlist==1.5.0
