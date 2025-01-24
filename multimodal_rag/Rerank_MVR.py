@@ -128,11 +128,12 @@ class MultiVectorRetriever(BaseRetriever):
             if self.id_key in d.metadata and d.metadata[self.id_key] not in ids:
                 ids.append(d.metadata[self.id_key])
         docs = self.docstore.mget(ids)
-        for i in docs:
-            if i is None: 
-                print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-            else:
-                print("###############################################")
+        # debugging code
+        # for i in docs:
+        #     if i is None: 
+        #         print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        #     else:
+        #         print("###############################################")
         # print(self.docstore.mget("248df390-defc-461b-840c-cdaa4a773137"))
         return [d for d in docs if d is not None]
 
