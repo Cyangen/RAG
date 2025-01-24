@@ -1,0 +1,36 @@
+FROM ubuntu:22.04
+
+# Update package list and install necessary packages
+RUN apt-get update
+RUN apt-get install sudo
+RUN sudo apt-get install -y curl
+RUN apt install -y python3.11 python3.11-distutils 
+RUN sudo apt-get install -y tesseract-ocr
+RUN sudo apt-get install -y poppler-utils
+RUN sudo apt-get install -y ffmpeg libsm6 libxext6  -y
+
+# Install pip for Python 3.11
+RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
+
+# Install ollama (assuming it's available in the package repository)
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+RUN mkdir llm
+
+# Set the working directory (you need to specify a directory)
+WORKDIR /RAG
+
+# Copy Local Dir into Container
+COPY . .
+
+# pip install
+RUN pip install -r requirements.txt
+
+RUN ollama serve
+
+RUN ollama pull phi3.5
+RUN ollama pull nomic-embed-text
+RUN ollama pull llama-phi3
+
+# Default command (optional, but useful for debugging)
+CMD ["bash"]

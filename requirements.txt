@@ -12,7 +12,7 @@ langchain-ollama
 langdetect
 langsmith
 chromadb
-python-magic-bin
+# python-magic-bin
 gradio
 flashrank
 faiss_cpu
