@@ -1,0 +1,16 @@
+Pull axolotl docker image from github
+docker run --gpus '"all"' --rm -it axolotlai/axolotl:main-latest
+
+Run docker container
+docker run --gpus all -it [image_id]
+
+Create own config.yaml
+
+Copy into docker container
+docker cp .\config.yaml [container_id]:workspace/axolotl/config.yaml
+
+Train QLoRA
+python -m axolotl.cli.train --config /workspace/axolotl/config.yaml
+
+Copy out QLoRA
+docker cp [container_id]:/workspace/axolotl/outputs/qlora-out .\
