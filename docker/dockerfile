@@ -15,22 +15,23 @@ RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 # Install ollama (assuming it's available in the package repository)
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
-RUN mkdir /LLM
-
-# Set the working directory (you need to specify a directory)
+# Set the working directory (you need to specify a directory) + Make if not exist
 WORKDIR /LLM
 
 # Copy Local Dir into Container
-COPY ../ /LLM
+COPY . .
 
 # pip install
 RUN pip install -r requirements.txt
 
-# 0llama
-RUN ollama serve
-RUN ollama pull phi3.5
-RUN ollama pull nomic-embed-text
-RUN ollama pull llama-phi3
+# ollama
+# ollama
+RUN ollama serve & sleep 5 && ollama pull phi3.5 && ollama pull nomic-embed-text && ollama pull llava-phi3
+# RUN ollama pull phi3.5
+# RUN ollama pull nomic-embed-text 
+# RUN ollama pull llava-phi3
+
+# Need to incorporate running the 2 files once to pull any models needed
 
 # Default command (optional, but useful for debugging)
 CMD ["bash"]
