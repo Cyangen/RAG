@@ -115,7 +115,7 @@ def embedding_chains():
             "question": RunnablePassthrough(),
         }
         | RunnableLambda(build_prompt)
-        | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
+        | ChatOllama(model=local_model, keep_alive=0, temperature=0, max_tokens=512)
     )
 
     chain_with_sources = {
@@ -124,7 +124,7 @@ def embedding_chains():
     } | RunnablePassthrough().assign(
         response=(
             RunnableLambda(build_prompt)
-            | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
+            | ChatOllama(model=local_model, keep_alive=0, temperature=0, max_tokens=512)
         )
     )
     return chain, chain_with_sources
@@ -134,6 +134,7 @@ def response_no_sources(user_input):
     print("\n\nResponse:\n")
     for chunk in chain.stream(user_input):
         print(chunk.content, end="", flush=True)
+    print()
 
 
 def response_with_sources(user_input):
@@ -154,5 +155,6 @@ def response_with_sources(user_input):
 
 
 if __name__ == "__main__":
+    local_model = "llama3.2-vision"
     response_with_sources("How does multi-head attention mechanism works within the Transformer model?") #Replace testing prompt with user input
     # response_with_sources("The image presents a diagram illustrating the flow of information from sensors to the central processing unit (CPU) and then back out to various components. The diagram is in black and white, with arrows indicating the direction of data transfer.\n\nAt the top left,")
