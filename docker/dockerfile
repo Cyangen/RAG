@@ -26,8 +26,7 @@ RUN ollama serve & sleep 5 && ollama pull phi3.5 && ollama pull nomic-embed-text
 WORKDIR /LLM
 
 # Copy Local Dirs into Container
-COPY ./multimodal_rag ./multimodal_rag
-COPY ./data ./data
+COPY ./to_docker .
 
 # pip install
 RUN pip install -r requirements.txt

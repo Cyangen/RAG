@@ -1,0 +1,52 @@
+Pandas Documentation Snippets
+DataFrame Creation
+**Description**: Creating a DataFrame using a dictionary.
+**Example**:
+import pandas as pd
+
+data = {'Name': ['Alice', 'Bob', 'Charlie'], 'Age': [25, 30, 35], 'City': ['New York', 'Los Angeles', 'Chicago']}
+
+df = pd.DataFrame(data)
+print(df)
+**Notes**: Ensure the keys in the dictionary are column names, and values are lists of equal length.
+
+Reading CSV Files
+**Description**: Reading data from a CSV file into a DataFrame.
+**Example**:
+import pandas as pd
+
+df = pd.read_csv('data.csv')
+print(df.head())
+**Notes**: Use optional parameters like 'sep', 'header', and 'index_col' to customize how the file is read.
+
+Data Selection
+**Description**: Selecting specific columns or rows from a DataFrame.
+**Example**:
+import pandas as pd
+
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6], 'C': [7, 8, 9]})
+print(df['A'])
+print(df.loc[0])
+print(df.iloc[:, :2])
+**Notes**: 'loc' is label-based indexing, while 'iloc' is position-based indexing.
+
+Data Manipulation
+**Description**: Applying operations to manipulate data.
+**Example**:
+import pandas as pd
+
+df = pd.DataFrame({'A': [1, 2, 3], 'B': [4, 5, 6]})
+df['C'] = df['A'] + df['B']
+print(df)
+**Notes**: You can add new columns by assigning operations on existing columns.
+
+Handling Missing Data
+**Description**: Dealing with NaN values in a DataFrame.
+**Example**:
+import pandas as pd
+
+df = pd.DataFrame({'A': [1, None, 3], 'B': [4, 5, None]})
+print(df.fillna(0))
+print(df.dropna())
+**Notes**: Use 'fillna()' to replace NaNs with a specific value, and 'dropna()' to remove rows or columns with NaNs.
+
