@@ -21,6 +21,8 @@ from langchain.retrievers.document_compressors import FlashrankRerank
 # Editted Source Codes
 from Rerank_MVR import MultiVectorRetriever
 
+local_model = "llama3.2-vision"
+
 def parse_docs(docs):
     """Split base64-encoded images and texts"""
     b64 = []
@@ -115,7 +117,7 @@ def embedding_chains():
             "question": RunnablePassthrough(),
         }
         | RunnableLambda(build_prompt)
-        | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
+        | ChatOllama(model=local_model, keep_alive=0, temperature=0, max_tokens=512)
     )
 
     chain_with_sources = {
@@ -124,7 +126,7 @@ def embedding_chains():
     } | RunnablePassthrough().assign(
         response=(
             RunnableLambda(build_prompt)
-            | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
+            | ChatOllama(model=local_model, keep_alive=0, temperature=0, max_tokens=512)
         )
     )
     return chain, chain_with_sources
@@ -134,6 +136,7 @@ def response_no_sources(user_input):
     print("\n\nResponse:\n")
     for chunk in chain.stream(user_input):
         print(chunk.content, end="", flush=True)
+    print()
 
 
 def response_with_sources(user_input):
