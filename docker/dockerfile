@@ -1,20 +1,12 @@
-FROM ubuntu:22.04
+FROM python:3.11.5
 
 # Update package list and install necessary packages
 RUN apt-get update
 RUN apt-get install sudo
 RUN sudo apt-get install -y curl
-RUN apt install -y python3.11 python3.11-distutils 
 RUN sudo apt-get install -y tesseract-ocr
 RUN sudo apt-get install -y poppler-utils
 RUN sudo apt-get install -y ffmpeg libsm6 libxext6  -y
-
-# Install pip for Python 3.11
-RUN curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
-
-# update alternatives
-RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.11 1
-RUN update-alternatives --config python3
 
 # Install ollama (assuming it's available in the package repository)
 RUN curl -fsSL https://ollama.com/install.sh | sh
@@ -22,14 +14,15 @@ RUN curl -fsSL https://ollama.com/install.sh | sh
 # Ollama Serve + Pull Models
 RUN ollama serve & sleep 5 && ollama pull phi3.5 && ollama pull nomic-embed-text && ollama pull llava-phi3
 
+# pip install
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
 # Set the working directory (you need to specify a directory) + Make if not exist
 WORKDIR /LLM
 
 # Copy Local Dirs into Container
 COPY ./to_docker .
-
-# pip install
-RUN pip install -r requirements.txt
 
 # Need to incorporate running the 2 files once to pull any models needed
 

@@ -227,7 +227,8 @@ def image_embedder(image_path):
     retriever.docstore.mset(list(zip(img_ids, images_pickled)))
 
 if __name__ == "__main__":
-    pdf_embedder(r"..\data\pdf_test\1706.03762v7.pdf")
+    # pdf_embedder(r"..\data\pdf_test\1706.03762v7.pdf")
+    pdf_embedder("../data/pdf_test/1706.03762v7.pdf")
     # image_embedder(r"S:\LLM\RAG\multimodal_rag\image2.jpg")
 
     print("DONE")
