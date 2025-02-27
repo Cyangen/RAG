@@ -8,3 +8,10 @@ __pycache__
 .Python
 env
 .venv
+rag_venv/
+WPy64-31150
+Winpython64-3.11.5.0.exe
+langchain_multimodal.ipynb
+testing
+test.py
+testing.py

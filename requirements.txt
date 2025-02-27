@@ -16,6 +16,7 @@ chromadb
 gradio
 flashrank
 faiss_cpu
+IPython
 
 # Install poppler and add to PATH
 # RMB TO UNINSTALL python-magic 
