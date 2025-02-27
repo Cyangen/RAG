@@ -15,6 +15,7 @@ from io import BytesIO
 import pickle, base64
 import gradio as gr
 
+local_model = "llama3.2-vision"
 
 def parse_docs(docs):
     """Split base64-encoded images and texts"""
@@ -96,22 +97,14 @@ def embedding_chains():
             "question": RunnablePassthrough(),
         }
         | RunnableLambda(build_prompt)
-        | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
+        | ChatOllama(model=local_model, keep_alive=0, temperature=0, max_tokens=512)
     )
 
-    chain_with_sources = {
-        "context": retriever | RunnableLambda(parse_docs),
-        "question": RunnablePassthrough(),
-    } | RunnablePassthrough().assign(
-        response=(
-            RunnableLambda(build_prompt)
-            | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
-            | StrOutputParser()
-        )
-    )
-    return chain, chain_with_sources, retriever
+    return chain, retriever
 
-chain, chain_with_sources, retriever = embedding_chains()
+chain, retriever = embedding_chains()
+
+
 def gr_func(user_input):
     print("-"*50 + "\nRUNNING\n" + "-"*50)
     
