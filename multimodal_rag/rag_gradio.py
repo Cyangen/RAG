@@ -17,8 +17,8 @@ import gradio as gr
 
 local_model = "llama3.2-vision"
 
+# Split base64-encoded images and texts
 def parse_docs(docs):
-    """Split base64-encoded images and texts"""
     b64 = []
     text = []
     for doc_pickle in docs:
@@ -33,9 +33,8 @@ def parse_docs(docs):
     print(len(b64), len(text))
     return {"images": b64, "texts": text}
 
-
+# Using Dict output of parse_docs and Dict output of chain, makes a ChatPromptTemplate for model input.
 def build_prompt(kwargs):
-
     docs_by_type = kwargs["context"]
     user_question = kwargs["question"]
 
@@ -69,7 +68,7 @@ def build_prompt(kwargs):
         ]
     )
 
-
+# Returns constructed chain and retriever functions
 def embedding_chains():
     # Define embedding model
     embeddings = OllamaEmbeddings(model="nomic-embed-text", show_progress=False)
