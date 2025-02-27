@@ -25,7 +25,7 @@ WORKDIR /LLM
 COPY ./to_docker .
 
 # Need to incorporate running the 2 files once to pull any models needed (but need figure out GPU, or only pull dont run)
-# RUN python PULL_MODEL_SCRIPT.py
+RUN python PULL_MODEL_SCRIPT.py
 
 # Default command (optional, but useful for debugging)
-CMD ["bash", "ollama serve > /dev/null 2>&1"]
+CMD ["ollama serve > /dev/null 2>&1", "bash"]
