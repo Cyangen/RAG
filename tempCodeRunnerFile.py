@@ -1,1 +1,0 @@
-relevance_score
