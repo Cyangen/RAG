@@ -19,6 +19,7 @@ def pdf_embedder(folder_path):
         for filename in filenames:
             if filename.endswith('.pdf'):
                 file_path = os.path.join(dir, filename)
+                print(file_path)
 
                 # Reference: https://docs.unstructured.io/open-source/core-functionality/chunking
                 chunks = partition_pdf(
@@ -235,7 +236,7 @@ if __name__ == "__main__":
     # pdf_embedder(r"..\data\pdf_test\1706.03762v7.pdf")
     # image_embedder(r"S:\LLM\RAG\multimodal_rag\image2.jpg")
     
-    pdf_embedder(r"..\data\Open_Source_Dataset\Intel reports")
+    pdf_embedder("../data/Open_Source_Dataset/Intel reports")
 
     print("DONE")
 
