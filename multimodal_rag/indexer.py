@@ -19,6 +19,7 @@ def pdf_embedder(folder_path):
         for filename in filenames:
             if filename.endswith('.pdf'):
                 file_path = os.path.join(dir, filename)
+                print(file_path)
 
                 # Reference: https://docs.unstructured.io/open-source/core-functionality/chunking
                 chunks = partition_pdf(
@@ -139,28 +140,34 @@ def pdf_embedder(folder_path):
                 images_pickled = [pickle.dumps(i) for i in images]
 
                 # Add texts
-                doc_ids = [str(uuid.uuid4()) for _ in texts_pickled]
-                summary_texts = [
-                    Document(page_content=summary, metadata={id_key: doc_ids[i]}) for i, summary in enumerate(text_summaries)
-                ]
-                retriever.vectorstore.add_documents(summary_texts)
-                retriever.docstore.mset(list(zip(doc_ids, texts_pickled)))
+                if texts:
+                    print("EMBEDDING TEXTS...")
+                    doc_ids = [str(uuid.uuid4()) for _ in texts_pickled]
+                    summary_texts = [
+                        Document(page_content=summary, metadata={id_key: doc_ids[i]}) for i, summary in enumerate(text_summaries)
+                    ]
+                    retriever.vectorstore.add_documents(summary_texts)
+                    retriever.docstore.mset(list(zip(doc_ids, texts_pickled)))
 
                 # Add tables
-                table_ids = [str(uuid.uuid4()) for _ in tables_pickled]
-                summary_tables = [
-                    Document(page_content=summary, metadata={id_key: table_ids[i]}) for i, summary in enumerate(table_summaries)
-                ]
-                retriever.vectorstore.add_documents(summary_tables)
-                retriever.docstore.mset(list(zip(table_ids, tables_pickled)))
+                if tables:
+                    print("EMBEDDING TABLES...")
+                    table_ids = [str(uuid.uuid4()) for _ in tables_pickled]
+                    summary_tables = [
+                        Document(page_content=summary, metadata={id_key: table_ids[i]}) for i, summary in enumerate(table_summaries)
+                    ]
+                    retriever.vectorstore.add_documents(summary_tables)
+                    retriever.docstore.mset(list(zip(table_ids, tables_pickled)))
 
                 # Add image summaries
-                img_ids = [str(uuid.uuid4()) for _ in images_pickled]
-                summary_img = [
-                    Document(page_content=summary, metadata={id_key: img_ids[i]}) for i, summary in enumerate(image_summaries)
-                ]
-                retriever.vectorstore.add_documents(summary_img)
-                retriever.docstore.mset(list(zip(img_ids, images_pickled)))
+                if images:
+                    print("EMBEDDING IMAGES...")
+                    img_ids = [str(uuid.uuid4()) for _ in images_pickled]
+                    summary_img = [
+                        Document(page_content=summary, metadata={id_key: img_ids[i]}) for i, summary in enumerate(image_summaries)
+                    ]
+                    retriever.vectorstore.add_documents(summary_img)
+                    retriever.docstore.mset(list(zip(img_ids, images_pickled)))
                 print("SUMMARIES EMBEDDED")
 
 
@@ -235,7 +242,7 @@ if __name__ == "__main__":
     # pdf_embedder(r"..\data\pdf_test\1706.03762v7.pdf")
     # image_embedder(r"S:\LLM\RAG\multimodal_rag\image2.jpg")
     
-    pdf_embedder(r"..\data\Open_Source_Dataset")
+    pdf_embedder("../data/Open_Source_Dataset/Intel reports")
 
     print("DONE")
 
