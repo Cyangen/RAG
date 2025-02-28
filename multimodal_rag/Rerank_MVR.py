@@ -10,6 +10,9 @@ from langchain_core.pydantic_v1 import Field, root_validator
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.stores import BaseStore, ByteStore
 from langchain_core.vectorstores import VectorStore
+from langchain.prompts import ChatPromptTemplate
+from langchain_community.chat_models import ChatOllama
+from langchain_core.output_parsers import StrOutputParser
 
 from langchain.storage._lc_store import create_kv_docstore
 
@@ -95,6 +98,34 @@ class MultiVectorRetriever(BaseRetriever):
         Returns:
             List of relevant documents
         """
+
+        # Query Rewriting for text
+        prompt_text ="""You are an expert at converting user questions into database queries. \
+
+Perform query expansion. If there are multiple common ways of phrasing a user question \
+or common synonyms for key words in the question, make sure to return multiple versions \
+of the query with the different phrasings.
+
+If there are acronyms or words you are not familiar with, do not try to rephrase them.
+
+Return at least 3 versions of the question.
+
+QUESTION: {question}
+"""
+        prompt = ChatPromptTemplate.from_template(prompt_text)
+
+        model = ChatOllama(temperature=0.5, 
+                        model='phi3.5',
+                        keep_alive=0,
+                        max_tokens=512)
+
+        rewrite_chain = prompt | model | StrOutputParser()
+
+        query = str(rewrite_chain.invoke(query))
+        print(query)
+
+
+
         if self.search_type == SearchType.mmr:
             sub_docs = self.vectorstore.max_marginal_relevance_search(
                 query, **self.search_kwargs
