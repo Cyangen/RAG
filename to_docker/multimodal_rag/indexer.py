@@ -235,7 +235,7 @@ if __name__ == "__main__":
     # pdf_embedder(r"..\data\pdf_test\1706.03762v7.pdf")
     # image_embedder(r"S:\LLM\RAG\multimodal_rag\image2.jpg")
     
-    pdf_embedder(r"..\data\Open_Source_Dataset")
+    pdf_embedder(r"..\data\Open_Source_Dataset\Intel reports")
 
     print("DONE")
 
