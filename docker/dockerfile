@@ -32,4 +32,4 @@ EXPOSE 7860
 ENV GRADIO_SERVER_NAME="0.0.0.0"
 
 # Default command (optional, but useful for debugging) (runs ollama serve, followed by bash)
-CMD ["sh", "-c", "ollama serve > /dev/null 2>&1 Z & python ./multimodal_rag/rag_gradio.py > /dev/null 2>&1 Z & bash"]
+CMD ["sh", "-c", "ollama serve > /dev/null 2>&1 & python ./multimodal_rag/rag_gradio.py > /dev/null 2>&1 & bash"]
