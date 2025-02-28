@@ -2,7 +2,7 @@ from unstructured.partition.pdf import partition_pdf
 from langchain.retrievers.document_compressors import FlashrankRerank
 
 partition_pdf(
-        filename=r'./data/dummy_data/1cat.pdf',
+        filename=r'./data/dummy_data/1Cat.pdf',
         infer_table_structure=True,            # extract tables
         strategy="hi_res",                     # mandatory to infer tables
 

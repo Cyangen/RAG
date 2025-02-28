@@ -15,9 +15,10 @@ from io import BytesIO
 import pickle, base64
 import gradio as gr
 
+local_model = "llama3.2-vision"
 
+# Split base64-encoded images and texts
 def parse_docs(docs):
-    """Split base64-encoded images and texts"""
     b64 = []
     text = []
     for doc_pickle in docs:
@@ -27,11 +28,13 @@ def parse_docs(docs):
             b64.append(doc)
         except Exception as e:
             text.append(doc)
+    global data 
+    data = {"images": b64, "texts": text}
+    print(len(b64), len(text))
     return {"images": b64, "texts": text}
 
-
+# Using Dict output of parse_docs and Dict output of chain, makes a ChatPromptTemplate for model input.
 def build_prompt(kwargs):
-
     docs_by_type = kwargs["context"]
     user_question = kwargs["question"]
 
@@ -65,14 +68,7 @@ def build_prompt(kwargs):
         ]
     )
 
-
-def display_base64_image(base64_code):
-    # Decode the base64 string to binary
-    image_data = base64.b64decode(base64_code)
-
-    # Display the image
-    display(Image(data=image_data))
-
+# Returns constructed chain and retriever functions
 def embedding_chains():
     # Define embedding model
     embeddings = OllamaEmbeddings(model="nomic-embed-text", show_progress=False)
@@ -100,47 +96,42 @@ def embedding_chains():
             "question": RunnablePassthrough(),
         }
         | RunnableLambda(build_prompt)
-        | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
+        | ChatOllama(model=local_model, keep_alive=0, temperature=0, max_tokens=512)
     )
 
-    chain_with_sources = {
-        "context": retriever | RunnableLambda(parse_docs),
-        "question": RunnablePassthrough(),
-    } | RunnablePassthrough().assign(
-        response=(
-            RunnableLambda(build_prompt)
-            | ChatOllama(model="llava-phi3", keep_alive=0, temperature=0, max_tokens=512)
-            | StrOutputParser()
-        )
-    )
-    return chain, chain_with_sources, retriever
+    return chain, retriever
 
-chain, chain_with_sources, retriever = embedding_chains()
-def response_no_sources(user_input):
+chain, retriever = embedding_chains()
+
+
+def gr_func(user_input):
     print("-"*50 + "\nRUNNING\n" + "-"*50)
-    data = retriever.invoke(user_input)
-    data = parse_docs(data)
     
-    text_context = ""
-    for i in data["texts"]:
-        text_context += i.text
-    img = None
-    for i in data["images"]: #please change to adapt for more images
-        img = PIL_Image.open(BytesIO(base64.b64decode(i)))
 
     result = ""
+    text_context = ""
+    img = []
+    
     for chunk in chain.stream(user_input):
         print(chunk.content, end="", flush=True)
         result += chunk.content
         yield result, text_context, img
 
+    for index, i in enumerate(data["texts"]):
+        text_context += f"\n{'-'*50} [{index}] {'-'*50} \n" + i.text
+
+    for i in data["images"]: #please change to adapt for more images
+        img.append(PIL_Image.open(BytesIO(base64.b64decode(i))))
+
+    print()
+    yield result, text_context, img
 
 if __name__ == "__main__":
     interface = gr.Interface(
         title= "Multimodal RAG",
-        fn=response_no_sources,
+        fn=gr_func,
         inputs=[gr.Textbox(label="Question", placeholder="Enter your question here", lines=1, max_lines=10)],
-        outputs=[gr.Textbox(label="Answer", lines=1, max_lines=10), gr.Textbox(label="Context", lines=1, max_lines=10), gr.Image(label="Image Context", type="pil")],
+        outputs=[gr.Textbox(label="Answer", lines=1, max_lines=10), gr.Textbox(label="Context", lines=1, max_lines=10), gr.Gallery(label="Image Context")],
     )
 
     interface.launch(share=False)

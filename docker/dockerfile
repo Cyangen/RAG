@@ -12,7 +12,7 @@ RUN sudo apt-get install -y ffmpeg libsm6 libxext6  -y
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
 # Ollama Serve + Pull Models
-RUN ollama serve & sleep 5 && ollama pull phi3.5 && ollama pull nomic-embed-text && ollama pull llava-phi3
+RUN ollama serve & sleep 5 && ollama pull phi3.5 && ollama pull nomic-embed-text && ollama pull llava-phi3 && ollama pull llama3.2-vision
 
 # pip install
 COPY requirements.txt .
@@ -26,6 +26,9 @@ COPY ./to_docker .
 
 # Need to incorporate running the 2 files once to pull any models needed (but need figure out GPU, or only pull dont run)
 RUN python PULL_MODEL_SCRIPT.py
+
+# Expose Ports (Gradio)
+EXPOSE 7860
 
 # Default command (optional, but useful for debugging) (runs ollama serve, followed by bash)
 CMD ["sh", "-c", "ollama serve > /dev/null 2>&1 & bash"]
