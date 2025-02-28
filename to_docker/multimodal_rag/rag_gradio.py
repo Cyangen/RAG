@@ -15,7 +15,9 @@ from io import BytesIO
 import pickle, base64
 import gradio as gr
 
-local_model = "llama3.2-vision"
+# local_model = "llama3.2-vision"
+# local_model = "llava:13b"
+local_model = "llava-llama3:8b"
 
 # Split base64-encoded images and texts
 def parse_docs(docs):

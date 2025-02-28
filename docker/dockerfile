@@ -12,7 +12,7 @@ RUN sudo apt-get install -y ffmpeg libsm6 libxext6  -y
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
 # Ollama Serve + Pull Models
-RUN ollama serve & sleep 5 && ollama pull phi3.5 && ollama pull nomic-embed-text && ollama pull llava-phi3 && ollama pull llama3.2-vision
+RUN ollama serve & sleep 5 && ollama pull phi3.5 && ollama pull nomic-embed-text && ollama pull llava-phi3 && ollama pull llava-llama3:8b
 
 # pip install
 COPY requirements.txt .
