@@ -6,7 +6,7 @@ from langchain_community.chat_models import ChatOllama
 from langchain.vectorstores import Chroma
 from langchain.storage import LocalFileStore
 from langchain_community.embeddings import OllamaEmbeddings
-from langchain.retrievers.multi_vector import MultiVectorRetriever
+# from langchain.retrievers.multi_vector import MultiVectorRetriever
 # from langchain_openai import ChatOpenAI
 from IPython.display import Image, display
 from PIL import Image as PIL_Image
@@ -15,7 +15,12 @@ from io import BytesIO
 import pickle, base64
 import gradio as gr
 
-local_model = "llama3.2-vision"
+from langchain.retrievers.document_compressors import FlashrankRerank
+
+# Editted Source Codes
+from Rerank_MVR import MultiVectorRetriever
+
+local_model = "llava-phi3"
 
 # Split base64-encoded images and texts
 def parse_docs(docs):
@@ -83,13 +88,16 @@ def embedding_chains():
     store = LocalFileStore("./db-localfiles")
     id_key = "doc_id"
 
-    # The retriever (empty to start)
+    # The retriever (empty to start) (Rerank)
     retriever = MultiVectorRetriever(
         vectorstore=vectorstore,
         docstore=store,
         id_key=id_key,
+        reranking_model=FlashrankRerank(top_n=5),
+        search_kwargs= {"k": 20} # set to 5 if not doing reranking
     )
 
+    
     chain = (
         {
             "context": retriever | RunnableLambda(parse_docs),
