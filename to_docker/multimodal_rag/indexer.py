@@ -140,28 +140,34 @@ def pdf_embedder(folder_path):
                 images_pickled = [pickle.dumps(i) for i in images]
 
                 # Add texts
-                doc_ids = [str(uuid.uuid4()) for _ in texts_pickled]
-                summary_texts = [
-                    Document(page_content=summary, metadata={id_key: doc_ids[i]}) for i, summary in enumerate(text_summaries)
-                ]
-                retriever.vectorstore.add_documents(summary_texts)
-                retriever.docstore.mset(list(zip(doc_ids, texts_pickled)))
+                if texts:
+                    print("EMBEDDING TEXTS...")
+                    doc_ids = [str(uuid.uuid4()) for _ in texts_pickled]
+                    summary_texts = [
+                        Document(page_content=summary, metadata={id_key: doc_ids[i]}) for i, summary in enumerate(text_summaries)
+                    ]
+                    retriever.vectorstore.add_documents(summary_texts)
+                    retriever.docstore.mset(list(zip(doc_ids, texts_pickled)))
 
                 # Add tables
-                table_ids = [str(uuid.uuid4()) for _ in tables_pickled]
-                summary_tables = [
-                    Document(page_content=summary, metadata={id_key: table_ids[i]}) for i, summary in enumerate(table_summaries)
-                ]
-                retriever.vectorstore.add_documents(summary_tables)
-                retriever.docstore.mset(list(zip(table_ids, tables_pickled)))
+                if tables:
+                    print("EMBEDDING TABLES...")
+                    table_ids = [str(uuid.uuid4()) for _ in tables_pickled]
+                    summary_tables = [
+                        Document(page_content=summary, metadata={id_key: table_ids[i]}) for i, summary in enumerate(table_summaries)
+                    ]
+                    retriever.vectorstore.add_documents(summary_tables)
+                    retriever.docstore.mset(list(zip(table_ids, tables_pickled)))
 
                 # Add image summaries
-                img_ids = [str(uuid.uuid4()) for _ in images_pickled]
-                summary_img = [
-                    Document(page_content=summary, metadata={id_key: img_ids[i]}) for i, summary in enumerate(image_summaries)
-                ]
-                retriever.vectorstore.add_documents(summary_img)
-                retriever.docstore.mset(list(zip(img_ids, images_pickled)))
+                if images:
+                    print("EMBEDDING IMAGES...")
+                    img_ids = [str(uuid.uuid4()) for _ in images_pickled]
+                    summary_img = [
+                        Document(page_content=summary, metadata={id_key: img_ids[i]}) for i, summary in enumerate(image_summaries)
+                    ]
+                    retriever.vectorstore.add_documents(summary_img)
+                    retriever.docstore.mset(list(zip(img_ids, images_pickled)))
                 print("SUMMARIES EMBEDDED")
 
 
