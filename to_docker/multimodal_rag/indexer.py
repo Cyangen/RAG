@@ -17,7 +17,7 @@ def pdf_embedder(folder_path):
     # loop through folder
     for dir, _, filenames in os.walk(folder_path):
         for filename in filenames:
-            if filename.endswith('.pdf')
+            if filename.endswith('.pdf'):
                 file_path = os.path.join(dir, filename)
 
                 # Reference: https://docs.unstructured.io/open-source/core-functionality/chunking
