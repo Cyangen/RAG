@@ -1,0 +1,22 @@
+unstructured[all-docs]
+pillow
+lxml
+pillow
+tiktoken
+python_dotenv
+pypdf
+langchain
+langchain-community
+langchain-experimental
+langchain-ollama
+langdetect
+langsmith
+chromadb
+# python-magic-bin
+gradio
+flashrank
+faiss_cpu
+IPython
+
+# Install poppler and add to PATH
+# RMB TO UNINSTALL python-magic 

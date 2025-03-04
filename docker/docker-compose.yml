@@ -1,0 +1,41 @@
+services:
+  rag:
+    #image: rag_gradio:latest  # Replace with your Ollama container image name
+    image: pipeline:pipeline
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]  # Enables GPU support
+    environment:
+      ENV HOST: "0.0.0.0"
+      ENV PORT: "9099"
+    volumes:
+      - E:\RAG:/LLM
+    ports:
+      - "7860:7860"  # Expose gradio's API
+      - "8000:8000"  # Expose API for Openweb UI
+      - "9099:9099"  # Expose pipeline port
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: always
+#    networks:
+#      - rag_network
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    ports:
+      - "3000:8080"
+    environment:
+      OLLAMA_BASE_URL: "http://rag:11434"  # Connect OpenWebUI to Ollama
+    volumes:
+      - F:\CVU\openweb_ui_volume:/app/backend/data
+    restart: always
+#    networks:
+#      - rag_network
+
+#networks:
+#  rag_network:
+#    driver: bridge

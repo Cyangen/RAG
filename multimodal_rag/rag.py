@@ -1,4 +1,3 @@
-# Other modules
 from IPython.display import Image, display
 from PIL import Image as PIL_Image
 from base64 import b64decode
@@ -21,7 +20,10 @@ from langchain.retrievers.document_compressors import FlashrankRerank
 # Editted Source Codes
 from Rerank_MVR import MultiVectorRetriever
 
-local_model = "llama3.2-vision"
+# api stuff
+
+
+local_model = "llava-phi3"
 
 def parse_docs(docs):
     """Split base64-encoded images and texts"""
@@ -66,11 +68,7 @@ def build_prompt(kwargs):
                 }
             )
 
-    return ChatPromptTemplate.from_messages(
-        [
-            HumanMessage(content=prompt_content),
-        ]
-    )
+    return ChatPromptTemplate.from_messages([HumanMessage(content=prompt_content)])
 
 
 def display_base64_image(base64_code):
@@ -80,7 +78,7 @@ def display_base64_image(base64_code):
     # Display the image
     display(Image(data=image_data))
 
-def embedding_chains():
+def get_rag_pipeline():
     # Define embedding model
     embeddings = OllamaEmbeddings(model="nomic-embed-text", show_progress=False)
 
@@ -111,6 +109,7 @@ def embedding_chains():
     #     search_kwargs= {"k": 5}
     # )
 
+    #define llm pipeline
     chain = (
         {
             "context": retriever | RunnableLambda(parse_docs),
@@ -131,31 +130,41 @@ def embedding_chains():
     )
     return chain, chain_with_sources
 
-chain, chain_with_sources = embedding_chains()
+chain, chain_with_sources = get_rag_pipeline()
+
 def response_no_sources(user_input):
-    print("\n\nResponse:\n")
+    #print("\n\nResponse:\n")
     for chunk in chain.stream(user_input):
-        print(chunk.content, end="", flush=True)
-    print()
+        yield chunk.content
+        # print(chunk.content, end="", flush=True)
+    # print()
 
 
 def response_with_sources(user_input):
     response = chain_with_sources.invoke(
         user_input
     )
-    print("\n\nResponse:", response['response'])
+    #print("\n\nResponse:", response['response'])
+    yield f"\n\nResponse: {response['response']}\n\nContext:\n"
 
-    print("\n\nContext:")
+    #print("\n\nContext:")
+
     # print(len(response['context']['texts']), len(response['context']['images']))
     for text in response['context']['texts']:
-        print(text.text)
-        print("Page number: ", text.metadata.page_number)
-        print("\n" + "-"*50 + "\n")
+        #print(text.text)
+        #print("Page number: ", text.metadata.page_number)
+        #print("\n" + "-"*50 + "\n")
+        yield f"{text.text}\nPage number: {text.metadata.page_number}\n" + "-"*50 + "\n"
+
     for image in response['context']['images']:
         # display_base64_image(image)
         PIL_Image.open(BytesIO(base64.b64decode(image))).show()
 
 
 if __name__ == "__main__":
-    response_with_sources("How does multi-head attention mechanism works within the Transformer model?") #Replace testing prompt with user input
+    user_query = input("Enter your question: ")  # Prompt user for input
+    for chunk in response_no_sources(user_query):
+        print(chunk, end="", flush=True) #only
+
+    # response_with_sources("How does multi-head attention mechanism works within the Transformer model?") #Replace testing prompt with user input
     # response_with_sources("The image presents a diagram illustrating the flow of information from sensors to the central processing unit (CPU) and then back out to various components. The diagram is in black and white, with arrows indicating the direction of data transfer.\n\nAt the top left,")
