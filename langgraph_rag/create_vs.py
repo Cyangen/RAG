@@ -1,6 +1,6 @@
 from pathlib import Path
 
-import fitz
+import pymupdf
 from langchain.docstore.document import Document
 from langchain.retrievers import ParentDocumentRetriever
 from langchain.storage import LocalFileStore
@@ -42,7 +42,7 @@ retriever = ParentDocumentRetriever(
 docs = []
 
 for p in tqdm(pdf_paths):
-    pdf_doc = fitz.open(str(p))
+    pdf_doc = pymupdf.open(str(p))
     pdf_str = ""
     for page in pdf_doc:
         pdf_str += page.get_text()

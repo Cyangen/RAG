@@ -1,12 +1,24 @@
-# About
-This is the code repository accompanying the Medium Article 
+# GADIO
 
+## Setup
 
-<img src="images/chat_screenshot.png" width=560px>
+### Setting up Python 
 
+Ensure that you are in a Python environment with Python 3.12. For example:
 
-# Setup
-## Ollama
+```bash
+conda env create -f env.yml
+conda activate chatbot
+```
+
+Alternatively...
+
+```sh
+pip install -r requirements.txt
+```
+
+### Setting up Ollama
+
 1. Download Ollama
 You can download Ollama from https://www.ollama.com.
 
@@ -30,20 +42,29 @@ ollama pull deepseek-r1:8b
 ║ deepseek-r1:8b   ║ Complex Chat, Well thought out Response ║
 ╚══════════════════╩═════════════════════════════════════════╝
 ```
-## Python environment
-```bash
-conda env create -f env.yml
-conda activate chatbot
-```
-Create vector store
+
+## Testing it Out
+
+## Creating the Vector Store
+
 ```bash
 python create_vs.py
 ```
-Run webapp
+
+## Running as FastAPI Backend
+
+```bash
+fastapi run main.py
+```
+
+By default, the backend runs at http://localhost:8000/.
+
+## Running as Streamlit App
+
 ```bash
 streamlit run app.py
 ```
 
-# Questions you can ask
+## Questions you can ask
 - Trigger RAG: ask question related to Kredivo
 - Trigger system 2: ask it to plan an itinerary 

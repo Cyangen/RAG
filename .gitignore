@@ -8,3 +8,6 @@ test.py
 testing.py
 __pycache__
 Open_Source_Dataset
+.venv/
+**.DS_Store
+data/
