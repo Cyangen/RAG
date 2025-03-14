@@ -6,3 +6,5 @@ langgraph
 chromadb
 PyMuPDF
 streamlit
+fastapi[standard]
+uvicorn[standard]
